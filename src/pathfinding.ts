@@ -14,7 +14,7 @@ export default class Pathfinding {
   ) {
     if (startX === endX && startY === endY) {
       return [];
-    } else if (!Pathfinding.isCoordWalkable(grid, endX, endY)) {
+    } else if (!grid.isCoordWalkable(endX, endY)) {
       return null;
     }
 
@@ -103,18 +103,6 @@ export default class Pathfinding {
     }
   }
 
-  static getCoordCost(grid: Grid, x: number, y: number): number {
-    const extraCost = grid.extraCosts.has(y) && grid.extraCosts.get(y)!.get(x);
-    return extraCost || grid.costs.get(grid.tiles[y][x])!;
-  }
-
-  static isCoordWalkable(grid: Grid, x: number, y: number) {
-    const unwalkable =
-      grid.unwalkableCoords.has(y) &&
-      grid.unwalkableCoords.get(y)!.get(x);
-    return !unwalkable && grid.walkableTiles.indexOf(grid.tiles[y][x]) !== -1;
-  }
-
   static checkAdjacentNode(
     grid: Grid,
     search: Search,
@@ -127,7 +115,7 @@ export default class Pathfinding {
     const adjacentCost = Pathfinding.getCoordCost(grid, adjacentX, adjacentY);
 
     if (
-      Pathfinding.isCoordWalkable(grid, adjacentX, adjacentY) &&
+      grid.isCoordWalkable(adjacentX, adjacentY) &&
       Pathfinding.canAfford(sourceNode, adjacentCost, search.costThreshold)
     ) {
       const adjacentNode = Pathfinding.coordinateToNode(

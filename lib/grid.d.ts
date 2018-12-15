@@ -9,6 +9,8 @@ export default class Grid {
     costs: Map<number, number>;
     extraCosts: Map<number, Map<number, number>>;
     tiles: number[][];
+    isCoordWalkable(x: number, y: number): boolean;
+    getCoordCost(x: number, y: number): number;
     setTileCost(tile: number, cost: number): void;
     addExtraCost(x: number, y: number, cost: number): void;
     removeExtraCost(x: number, y: number): void;

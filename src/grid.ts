@@ -37,6 +37,18 @@ export default class Grid {
     }
   }
 
+  isCoordWalkable(x: number, y: number) {
+    const unwalkable =
+      this.unwalkableCoords.has(y) &&
+      this.unwalkableCoords.get(y)!.get(x);
+    return !unwalkable && this.walkableTiles.indexOf(this.tiles[y][x]) !== -1;
+  }
+
+  getCoordCost(x: number, y: number): number {
+    const extraCost = this.extraCosts.has(y) && this.extraCosts.get(y)!.get(x);
+    return extraCost || this.costs.get(this.tiles[y][x])!;
+  }
+
   setTileCost(tile: number, cost: number) {
     this.costs.set(tile, cost);
   }
