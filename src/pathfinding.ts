@@ -26,10 +26,9 @@ export default class Pathfinding {
     )
     search.push(startNode);
 
-    await Pathfinding.calculate(grid, search);
+    await Pathfinding.calculate(search, grid);
 
     const node = search.nodeQueue.pop();
-
     if (node) {
       const path: Coord[] = [];
 
@@ -59,7 +58,7 @@ export default class Pathfinding {
     );
     search.push(startNode);
 
-    await Pathfinding.calculate(grid, search);
+    await Pathfinding.calculate(search, grid);
 
     const nodes: Coord[] = [];
     search.nodeCache.forEach((map, y) => {
@@ -71,48 +70,52 @@ export default class Pathfinding {
     return nodes;
   }
 
-  static calculate(grid: Grid, search: Search): Search {
-    while (true) {
-      //fully traversed
-      if (search.nodeQueue.size() === 0) {
-        return search;
-      }
+  static calculate(search: Search, grid: Grid): Promise<Search> {
+    return new Promise(resolve => {
+      while (true) {
+        //fully traversed
+        if (search.nodeQueue.size() === 0) {
+          resolve(search);
+          return;
+        }
 
-      let node = search.nodeQueue.peek();
+        let node = search.nodeQueue.peek();
 
-      //path found
-      if (search.endX === node.x && search.endY === node.y) {
-        return search;
-      }
+        //path found
+        if (search.endX === node.x && search.endY === node.y) {
+          resolve(search);
+          return;
+        }
 
-      node = search.nodeQueue.pop();
+        node = search.nodeQueue.pop();
 
-      node.visited = true;
-      if (node.y > 0) {
-        Pathfinding.checkAdjacentNode(grid, search, node, 0, -1);
+        node.visited = true;
+        if (node.y > 0) {
+          Pathfinding.checkAdjacentNode(search, grid, node, 0, -1);
+        }
+        if (node.x < grid.tiles[node.y].length - 1) {
+          Pathfinding.checkAdjacentNode(search, grid, node, 1, 0);
+        }
+        if (node.y < grid.tiles.length - 1) {
+          Pathfinding.checkAdjacentNode(search, grid, node, 0, 1);
+        }
+        if (node.x > 0) {
+          Pathfinding.checkAdjacentNode(search, grid, node, -1, 0);
+        }
       }
-      if (node.x < grid.tiles[node.y].length - 1) {
-        Pathfinding.checkAdjacentNode(grid, search, node, 1, 0);
-      }
-      if (node.y < grid.tiles.length - 1) {
-        Pathfinding.checkAdjacentNode(grid, search, node, 0, 1);
-      }
-      if (node.x > 0) {
-        Pathfinding.checkAdjacentNode(grid, search, node, -1, 0);
-      }
-    }
+    });
   }
 
   static checkAdjacentNode(
-    grid: Grid,
     search: Search,
+    grid: Grid,
     sourceNode: Node,
     x: number,
     y: number
   ): void {
     const adjacentX = sourceNode.x + x;
     const adjacentY = sourceNode.y + y;
-    const adjacentCost = Pathfinding.getCoordCost(grid, adjacentX, adjacentY);
+    const adjacentCost = grid.getCoordCost(adjacentX, adjacentY);
 
     if (
       grid.isCoordWalkable(adjacentX, adjacentY) &&
