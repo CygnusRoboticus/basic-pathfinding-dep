@@ -1,3 +1,4 @@
+import Coord from './coord';
 export default class Node {
     constructor({ parent, x, y, cost, distanceToTarget }: {
         parent: Node | null;
@@ -13,4 +14,5 @@ export default class Node {
     distanceToTarget: number;
     visited: boolean;
     readonly guessTotalCost: number;
+    formatPath(): Coord[];
 }

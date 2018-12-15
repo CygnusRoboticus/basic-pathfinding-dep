@@ -1,3 +1,5 @@
+import Coord from './coord';
+
 export default class Node {
   constructor({
     parent,
@@ -29,5 +31,18 @@ export default class Node {
 
   get guessTotalCost() {
     return this.cost + this.distanceToTarget;
+  }
+
+  formatPath() {
+    const path: Coord[] = [];
+
+    path.push(new Coord(this.x, this.y));
+    let parent = this.parent;
+    while (parent) {
+      path.push(new Coord(parent.x, parent.y));
+      parent = parent.parent;
+    }
+    path.reverse();
+    return path;
   }
 }

@@ -40,4 +40,19 @@ export default class Search {
   push(node: Node) {
     this.nodeQueue.push(node);
   }
+
+  traversedCoords(): Coord[] {
+    const nodes: Coord[] = [];
+    this.nodeCache.forEach((map, y) => {
+      map.forEach((node, x) => {
+        nodes.push(new Coord(x, y));
+      });
+    });
+
+    return nodes;
+  }
+
+  cacheNode(node: Node) {
+    this.nodeCache.get(node.y)!.set(node.x, node);
+  }
 }

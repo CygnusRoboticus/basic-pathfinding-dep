@@ -1,4 +1,5 @@
 import Node from './node';
+import Coord from './coord';
 export default class Search {
     constructor({ startX, startY, endX, endY, costThreshold }: {
         startX: number;
@@ -15,4 +16,6 @@ export default class Search {
     nodeCache: Map<number, Map<number, Node>>;
     nodeQueue: any;
     push(node: Node): void;
+    traversedCoords(): Coord[];
+    cacheNode(node: Node): void;
 }

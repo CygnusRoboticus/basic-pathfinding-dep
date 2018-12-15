@@ -29,19 +29,9 @@ export default class Pathfinding {
     await Pathfinding.calculate(search, grid);
 
     const node = search.nodeQueue.pop();
-    if (node) {
-      const path: Coord[] = [];
-
-      path.push(new Coord(node.x, node.y));
-      let parent = node.parent;
-      while (parent) {
-        path.push(new Coord(parent.x, parent.y));
-        parent = parent.parent;
-      }
-      path.reverse();
-      return path;
-    }
-    return null;
+    return node ?
+      node.formatPath() :
+      null;
   }
 
   static async findReachable(
@@ -60,14 +50,7 @@ export default class Pathfinding {
 
     await Pathfinding.calculate(search, grid);
 
-    const nodes: Coord[] = [];
-    search.nodeCache.forEach((map, y) => {
-      map.forEach((node, x) => {
-        nodes.push(new Coord(x, y));
-      });
-    });
-
-    return nodes;
+    return search.traversedCoords();
   }
 
   static calculate(search: Search, grid: Grid): Promise<Search> {
@@ -175,7 +158,7 @@ export default class Pathfinding {
         1
     });
 
-    search.nodeCache.get(y)!.set(x, node);
+    search.cacheNode(node);
     return node;
   }
 
