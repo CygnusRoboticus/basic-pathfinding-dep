@@ -18,17 +18,17 @@ export default class Pathfinding {
       return null;
     }
 
-    const instance = new Search({
+    const search = new Search({
       startX, startY, endX, endY, costThreshold
     });
     const startNode = Pathfinding.coordinateToNode(
-      instance, null, startX, startY, 0
+      search, null, startX, startY, 0
     )
-    instance.push(startNode);
+    search.push(startNode);
 
-    await Pathfinding.calculate(grid, instance);
+    await Pathfinding.calculate(grid, search);
 
-    const node = instance.nodeQueue.pop();
+    const node = search.nodeQueue.pop();
 
     if (node) {
       const path: Coord[] = [];
@@ -51,18 +51,18 @@ export default class Pathfinding {
     y: number,
     costThreshold?: number
   ) {
-    const instance = new Search({
+    const search = new Search({
       startX: x, startY: y, costThreshold
     });
     const startNode = Pathfinding.coordinateToNode(
-      instance, null, x, y, 0
+      search, null, x, y, 0
     );
-    instance.push(startNode);
+    search.push(startNode);
 
-    await Pathfinding.calculate(grid, instance);
+    await Pathfinding.calculate(grid, search);
 
     const nodes: Coord[] = [];
-    instance.nodeCache.forEach((map, y) => {
+    search.nodeCache.forEach((map, y) => {
       map.forEach((node, x) => {
         nodes.push(new Coord(x, y));
       });
@@ -71,34 +71,34 @@ export default class Pathfinding {
     return nodes;
   }
 
-  static calculate(grid: Grid, instance: Search): Search {
+  static calculate(grid: Grid, search: Search): Search {
     while (true) {
       //fully traversed
-      if (instance.nodeQueue.size() === 0) {
-        return instance;
+      if (search.nodeQueue.size() === 0) {
+        return search;
       }
 
-      let node = instance.nodeQueue.peek();
+      let node = search.nodeQueue.peek();
 
       //path found
-      if (instance.endX === node.x && instance.endY === node.y) {
-        return instance;
+      if (search.endX === node.x && search.endY === node.y) {
+        return search;
       }
 
-      node = instance.nodeQueue.pop();
+      node = search.nodeQueue.pop();
 
       node.visited = true;
       if (node.y > 0) {
-        Pathfinding.checkAdjacentNode(grid, instance, node, 0, -1);
+        Pathfinding.checkAdjacentNode(grid, search, node, 0, -1);
       }
       if (node.x < grid.tiles[node.y].length - 1) {
-        Pathfinding.checkAdjacentNode(grid, instance, node, 1, 0);
+        Pathfinding.checkAdjacentNode(grid, search, node, 1, 0);
       }
       if (node.y < grid.tiles.length - 1) {
-        Pathfinding.checkAdjacentNode(grid, instance, node, 0, 1);
+        Pathfinding.checkAdjacentNode(grid, search, node, 0, 1);
       }
       if (node.x > 0) {
-        Pathfinding.checkAdjacentNode(grid, instance, node, -1, 0);
+        Pathfinding.checkAdjacentNode(grid, search, node, -1, 0);
       }
     }
   }
@@ -117,7 +117,7 @@ export default class Pathfinding {
 
   static checkAdjacentNode(
     grid: Grid,
-    instance: Search,
+    search: Search,
     sourceNode: Node,
     x: number,
     y: number
@@ -128,10 +128,10 @@ export default class Pathfinding {
 
     if (
       Pathfinding.isCoordWalkable(grid, adjacentX, adjacentY) &&
-      Pathfinding.canAfford(sourceNode, adjacentCost, instance.costThreshold)
+      Pathfinding.canAfford(sourceNode, adjacentCost, search.costThreshold)
     ) {
       const adjacentNode = Pathfinding.coordinateToNode(
-        instance,
+        search,
         sourceNode,
         adjacentX,
         adjacentY,
@@ -139,11 +139,11 @@ export default class Pathfinding {
       );
 
       if (!adjacentNode.visited) {
-        instance.push(adjacentNode);
+        search.push(adjacentNode);
       } else if (sourceNode.cost + adjacentCost < adjacentNode.cost) {
         adjacentNode.cost = sourceNode.cost + adjacentCost;
         adjacentNode.parent = sourceNode;
-        instance.nodeQueue.updateItem(adjacentNode);
+        search.nodeQueue.updateItem(adjacentNode);
       }
     }
   }
@@ -160,18 +160,18 @@ export default class Pathfinding {
   }
 
   static coordinateToNode(
-    instance: Search,
+    search: Search,
     parent: Node | null,
     x: number,
     y: number,
     cost: number
   ): Node {
-    if (instance.nodeCache.has(y)) {
-      if (instance.nodeCache.get(y)!.has(x)) {
-        return instance.nodeCache.get(y)!.get(x)!;
+    if (search.nodeCache.has(y)) {
+      if (search.nodeCache.get(y)!.has(x)) {
+        return search.nodeCache.get(y)!.get(x)!;
       }
     } else {
-      instance.nodeCache.set(y, new Map<number, Node>());
+      search.nodeCache.set(y, new Map<number, Node>());
     }
 
     const node = new Node({
@@ -179,12 +179,12 @@ export default class Pathfinding {
       x,
       y,
       cost: parent ? parent.cost + cost : cost,
-      distanceToTarget: instance.endX && instance.endY ?
-        Pathfinding.getDistance(x, y, instance.endX, instance.endY) :
+      distanceToTarget: search.endX && search.endY ?
+        Pathfinding.getDistance(x, y, search.endX, search.endY) :
         1
     });
 
-    instance.nodeCache.get(y)!.set(x, node);
+    search.nodeCache.get(y)!.set(x, node);
     return node;
   }
 
