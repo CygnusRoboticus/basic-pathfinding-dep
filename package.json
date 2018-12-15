@@ -1,0 +1,34 @@
+{
+  "name": "basic-pathing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "cross-env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\"}' mocha -r ts-node/register test/**/*.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CygnusRoboticus/basic-pathing.git"
+  },
+  "author": "CygnusRoboticus",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CygnusRoboticus/basic-pathing/issues"
+  },
+  "homepage": "https://github.com/CygnusRoboticus/basic-pathing#readme",
+  "dependencies": {
+    "heap": "^0.2.6"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/heap": "^0.2.28",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^10.12.15",
+    "chai": "^4.2.0",
+    "cross-env": "^5.2.0",
+    "mocha": "^5.2.0",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.2.2"
+  }
+}
