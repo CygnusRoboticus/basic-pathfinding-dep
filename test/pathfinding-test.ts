@@ -90,14 +90,48 @@ describe("Pathfinding", function() {
     it("returns null when target is not walkable", async function() {
       const grid = new Grid({
         tiles: [
-          [1, 1, 0, 1, 1],
-          [1, 1, 0, 1, 1],
-          [1, 1, 0, 1, 0],
-          [1, 1, 0, 1, 1],
-          [1, 1, 0, 1, 1]
+          [1, 1, 1, 1, 1],
+          [1, 1, 1, 1, 1],
+          [1, 1, 1, 1, 0],
+          [1, 1, 1, 1, 1],
+          [1, 1, 1, 1, 1]
         ],
         walkableTiles: [1]
       });
+
+      const path = await Pathfinding.findPath(grid, 0, 2, 4, 2);
+      assert.isNull(path);
+    });
+
+    it("returns null when target is unwalkable", async function() {
+      const grid = new Grid({
+        tiles: [
+          [1, 1, 1, 1, 1],
+          [1, 1, 1, 1, 1],
+          [1, 1, 1, 1, 1],
+          [1, 1, 1, 1, 1],
+          [1, 1, 1, 1, 1]
+        ],
+        walkableTiles: [1]
+      });
+      grid.addUnwalkableCoord(4, 2);
+
+      const path = await Pathfinding.findPath(grid, 0, 2, 4, 2);
+      assert.isNull(path);
+    });
+
+    it("returns null when target is unstoppable", async function() {
+      const grid = new Grid({
+        tiles: [
+          [1, 1, 1, 1, 1],
+          [1, 1, 1, 1, 1],
+          [1, 1, 1, 1, 1],
+          [1, 1, 1, 1, 1],
+          [1, 1, 1, 1, 1]
+        ],
+        walkableTiles: [1]
+      });
+      grid.addUnstoppableCoord(4, 2);
 
       const path = await Pathfinding.findPath(grid, 0, 2, 4, 2);
       assert.isNull(path);
@@ -252,6 +286,34 @@ describe("Pathfinding", function() {
         { x: 0, y: 1 },
         { x: 1, y: 0 },
         { x: 0, y: 0 }
+      ]);
+    });
+
+    it("avoids unstoppableCoords", async function() {
+      const grid = new Grid({
+        tiles: [
+          [1, 1, 0, 1, 1],
+          [1, 1, 0, 1, 1],
+          [1, 1, 0, 1, 1],
+          [1, 1, 0, 1, 1],
+          [1, 1, 0, 1, 1]
+        ],
+        walkableTiles: [1]
+      });
+
+      grid.addUnstoppableCoord(0, 3);
+      grid.addUnstoppableCoord(1, 3);
+
+      const path = await Pathfinding.findReachable(grid, 1, 2);
+      assert.deepEqual(path, [
+        { x: 1, y: 2 },
+        { x: 0, y: 2 },
+        { x: 1, y: 1 },
+        { x: 0, y: 1 },
+        { x: 1, y: 0 },
+        { x: 0, y: 0 },
+        { x: 1, y: 4 },
+        { x: 0, y: 4 }
       ]);
     });
 

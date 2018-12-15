@@ -41,7 +41,7 @@ export default class Search {
     this.nodeQueue.push(node);
   }
 
-  traversedCoords(): Coord[] {
+  get traversedNodes(): Coord[] {
     const nodes: Coord[] = [];
     this.nodeCache.forEach((map, y) => {
       map.forEach((node, x) => {

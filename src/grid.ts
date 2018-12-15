@@ -8,7 +8,8 @@ export default class Grid {
   }) {
     this.costs = new Map<number, number>();
     this.extraCosts = new Map<number, Map<number, number>>();
-    this.unwalkableCoords = new Map<number, Map<number, any>>()
+    this.unwalkableCoords = new Map<number, Map<number, any>>();
+    this.unstoppableCoords = new Map<number, Map<number, any>>();
 
     this._tiles = [];
     this.tiles = tiles;
@@ -17,6 +18,7 @@ export default class Grid {
 
   walkableTiles: Array<number>;
   unwalkableCoords: Map<number, Map<number, any>>;
+  unstoppableCoords: Map<number, Map<number, any>>;
 
   private _tiles: Array<Array<number>>;
   costs: Map<number, number>;
@@ -37,10 +39,15 @@ export default class Grid {
     }
   }
 
+  isCoordStoppable(x: number, y: number) {
+    const unstoppable = this.unstoppableCoords.has(y) &&
+      this.unstoppableCoords.get(y)!.has(x);
+    return !unstoppable && this.isCoordWalkable(x, y);
+  }
+
   isCoordWalkable(x: number, y: number) {
-    const unwalkable =
-      this.unwalkableCoords.has(y) &&
-      this.unwalkableCoords.get(y)!.get(x);
+    const unwalkable = this.unwalkableCoords.has(y) &&
+      this.unwalkableCoords.get(y)!.has(x);
     return !unwalkable && this.walkableTiles.indexOf(this.tiles[y][x]) !== -1;
   }
 
@@ -54,32 +61,49 @@ export default class Grid {
   }
 
   addExtraCost(x: number, y: number, cost: number) {
-    if (!this.extraCosts.has(y)) {
-      this.extraCosts.set(y, new Map<number, number>());
-    }
-    this.extraCosts.get(y)!.set(x, cost);
+    this.addCoord(this.extraCosts, x, y, cost);
   }
-
   removeExtraCost(x: number, y: number) {
-    if (this.extraCosts.has(y)) {
-      this.extraCosts.get(y)!.delete(x);
-    }
+    this.removeCoord(this.extraCosts, x, y);
+  }
+  clearExtraCosts() {
+    this.clearCoords(this.extraCosts);
   }
 
   addUnwalkableCoord(x: number, y: number) {
-    if (!this.unwalkableCoords.has(y)) {
-      this.unwalkableCoords.set(y, new Map<number, number>());
-    }
-    this.unwalkableCoords.get(y)!.set(x, true);
+    this.addCoord(this.unwalkableCoords, x, y);
   }
-
   removeUnwalkableCoord(x: number, y: number) {
-    if (this.unwalkableCoords.has(y)) {
-      this.unwalkableCoords.get(y)!.delete(x);
+    this.removeCoord(this.unwalkableCoords, x, y);
+  }
+  clearUnwalkableCoords() {
+    this.clearCoords(this.unwalkableCoords);
+  }
+
+  addUnstoppableCoord(x: number, y: number) {
+    this.addCoord(this.unstoppableCoords, x, y);
+  }
+  removeUnstoppableCoord(x: number, y: number) {
+    this.removeCoord(this.unstoppableCoords, x, y);
+  }
+  clearUnstoppableCoords() {
+    this.clearCoords(this.unstoppableCoords);
+  }
+
+  private addCoord(map: Map<number, Map<number, any>>, x: number, y: number, value: any = true) {
+    if (!map.has(y)) {
+      map.set(y, new Map<number, any>());
+    }
+    map.get(y)!.set(x, value);
+  }
+
+  private removeCoord(map: Map<number, Map<number, any>>, x: number, y: number) {
+    if (map.has(y)) {
+      map.get(y)!.delete(x);
     }
   }
 
-  clearUnwalkableCoords() {
-    this.unwalkableCoords.clear();
+  private clearCoords(map: Map<number, any>) {
+    map.clear();
   }
 }

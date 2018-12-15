@@ -14,7 +14,7 @@ export default class Pathfinding {
   ) {
     if (startX === endX && startY === endY) {
       return [];
-    } else if (!grid.isCoordWalkable(endX, endY)) {
+    } else if (!grid.isCoordStoppable(endX, endY)) {
       return null;
     }
 
@@ -50,7 +50,9 @@ export default class Pathfinding {
 
     await Pathfinding.calculate(search, grid);
 
-    return search.traversedCoords();
+    return search.traversedNodes.
+      filter(node => grid.isCoordStoppable(node.x, node.y)).
+      map(node => new Coord(node.x, node.y));
   }
 
   static calculate(search: Search, grid: Grid): Promise<Search> {

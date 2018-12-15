@@ -16,6 +16,6 @@ export default class Search {
     nodeCache: Map<number, Map<number, Node>>;
     nodeQueue: any;
     push(node: Node): void;
-    traversedCoords(): Coord[];
+    readonly traversedNodes: Coord[];
     cacheNode(node: Node): void;
 }
