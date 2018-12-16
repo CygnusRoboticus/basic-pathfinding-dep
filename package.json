@@ -2,7 +2,7 @@
   "name": "basic-pathing",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./lib/index.js",
   "scripts": {
     "build": "tsc",
     "test": "cross-env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\"}' mocha -r ts-node/register test/**/*.ts"
