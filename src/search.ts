@@ -22,7 +22,7 @@ export default class Search {
     this.endY = endY;
     this.costThreshold = costThreshold;
 
-    this.nodeCache = new Map<number, Map<number, Node>>();
+    this.cache = new Map<number, Map<number, Node>>();
     this.nodeQueue = new Heap((a: Node, b: Node) => {
       return a.guessTotalCost - b.guessTotalCost;
     });
@@ -34,7 +34,7 @@ export default class Search {
   endY?: number;
   costThreshold?: number;
 
-  nodeCache: Map<number, Map<number, Node>>;
+  cache: Map<number, Map<number, Node>>;
   nodeQueue: any;
 
   push(node: Node) {
@@ -43,7 +43,7 @@ export default class Search {
 
   get traversedNodes(): Coord[] {
     const nodes: Coord[] = [];
-    this.nodeCache.forEach((map, y) => {
+    this.cache.forEach((map, y) => {
       map.forEach((node, x) => {
         nodes.push(new Coord(x, y));
       });
@@ -53,6 +53,6 @@ export default class Search {
   }
 
   cacheNode(node: Node) {
-    this.nodeCache.get(node.y)!.set(node.x, node);
+    this.cache.get(node.y)!.set(node.x, node);
   }
 }

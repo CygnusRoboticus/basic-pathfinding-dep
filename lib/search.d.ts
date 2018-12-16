@@ -13,7 +13,7 @@ export default class Search {
     endX?: number;
     endY?: number;
     costThreshold?: number;
-    nodeCache: Map<number, Map<number, Node>>;
+    cache: Map<number, Map<number, Node>>;
     nodeQueue: any;
     push(node: Node): void;
     readonly traversedNodes: Coord[];

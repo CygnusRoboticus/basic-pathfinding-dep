@@ -142,12 +142,12 @@ export default class Pathfinding {
     y: number,
     cost: number
   ): Node {
-    if (search.nodeCache.has(y)) {
-      if (search.nodeCache.get(y)!.has(x)) {
-        return search.nodeCache.get(y)!.get(x)!;
+    if (search.cache.has(y)) {
+      if (search.cache.get(y)!.has(x)) {
+        return search.cache.get(y)!.get(x)!;
       }
     } else {
-      search.nodeCache.set(y, new Map<number, Node>());
+      search.cache.set(y, new Map<number, Node>());
     }
 
     const node = new Node({
