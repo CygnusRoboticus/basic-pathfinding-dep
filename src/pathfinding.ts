@@ -36,16 +36,20 @@ export default class Pathfinding {
 
   static async findWalkable(
     grid: Grid,
-    { x, y }: { x: number, y: number },
+    coords: Array<{ x: number, y: number }> | { x: number, y: number },
     costThreshold?: number
   ) {
+    coords = coords instanceof Array ? coords : [coords];
+    const { x, y } = coords[0];
     const search = new Search({
       startX: x, startY: y, costThreshold
     });
-    const startNode = Pathfinding.coordinateToNode(
-      search, null, x, y, 0
-    );
-    search.push(startNode);
+    coords.forEach(({ x, y }) => {
+      const node = Pathfinding.coordinateToNode(
+        search, null, x, y, 0
+      );
+      search.push(node);
+    });
 
     await Pathfinding.calculate(search, grid);
 
