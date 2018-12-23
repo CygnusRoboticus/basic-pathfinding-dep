@@ -1,15 +1,24 @@
+export enum GridType {
+  cardinal,
+  hex,
+  intercardinal
+}
+
 export default class Grid {
   constructor({
     tiles = [],
-    walkableTiles = []
+    walkableTiles = [],
+    type = GridType.cardinal
   }: {
     tiles: Array<Array<number>>,
     walkableTiles?: Array<number>
+    type?: GridType
   }) {
     this.costs = new Map<number, number>();
     this.extraCosts = new Map<number, Map<number, number>>();
     this.unwalkableCoords = new Map<number, Map<number, any>>();
     this.unstoppableCoords = new Map<number, Map<number, any>>();
+    this.type = type;
 
     this._tiles = [];
     this.tiles = tiles;
@@ -19,6 +28,7 @@ export default class Grid {
   walkableTiles: Array<number>;
   unwalkableCoords: Map<number, Map<number, any>>;
   unstoppableCoords: Map<number, Map<number, any>>;
+  type: GridType;
 
   private _tiles: Array<Array<number>>;
   costs: Map<number, number>;
@@ -37,6 +47,23 @@ export default class Grid {
         }
       }
     }
+  }
+
+  get isCardinal() {
+    return this.type === GridType.cardinal;
+  }
+  get isHex() {
+    return this.type === GridType.hex;
+  }
+  get isIntercardinal() {
+    return this.type === GridType.intercardinal;
+  }
+
+  inGrid(x: number, y: number) {
+    return x >= 0 &&
+      y >= 0 &&
+      y < this.tiles.length &&
+      x < this.tiles[y].length;
   }
 
   isCoordStoppable(x: number, y: number) {
@@ -88,6 +115,20 @@ export default class Grid {
   }
   clearUnstoppableCoords() {
     this.clearCoords(this.unstoppableCoords);
+  }
+
+  static toCoordMap(
+    coords: Array<{x: number, y: number}>,
+    map: Map<number, Map<number, any>> = new Map<number, Map<number, any>>(),
+    value: any = true
+  ) {
+    coords.forEach(({ x: x, y: y }) => {
+      if (!map.has(y)) {
+        map.set(y, new Map<number, Map<number, any>>());
+      }
+      map.get(y)!.set(x, value);
+    });
+    return map;
   }
 
   private addCoord(map: Map<number, Map<number, any>>, x: number, y: number, value: any = true) {

@@ -1,6 +1,6 @@
 import "mocha";
 import { assert } from "chai";
-import Pathfinding, { Grid } from "../src/index";
+import Pathfinding, { Grid, GridType } from "../src/index";
 
 describe("Pathfinding", function() {
   describe("#findPath", function() {
@@ -237,6 +237,50 @@ describe("Pathfinding", function() {
         { x: 3, y: 2 }
       ]);
     });
+
+    it("it navigates hex grids", async function() {
+      const grid = new Grid({
+        tiles: [
+          [1, 1, 0, 1, 1],
+          [1, 1, 0, 1, 1],
+          [1, 0, 1, 0, 1],
+          [1, 1, 0, 1, 1],
+          [1, 1, 1, 1, 1]
+        ],
+        walkableTiles: [1],
+        type: GridType.hex
+      });
+
+      const path = await Pathfinding.findPath(grid, 1, 1, 2, 2)
+      assert.deepEqual(path, [
+        { x: 1, y: 1 },
+        { x: 0, y: 2 },
+        { x: 0, y: 3 },
+        { x: 1, y: 3 },
+        { x: 2, y: 2 }
+      ]);
+    });
+
+    it("it navigates intercardinal grids", async function() {
+      const grid = new Grid({
+        tiles: [
+          [1, 1, 0, 1, 1],
+          [1, 1, 0, 1, 1],
+          [1, 0, 1, 0, 1],
+          [1, 1, 0, 1, 1],
+          [1, 1, 1, 1, 1]
+        ],
+        walkableTiles: [1],
+        type: GridType.intercardinal
+      });
+
+      const path = await Pathfinding.findPath(grid, 1, 1, 3, 3)
+      assert.deepEqual(path, [
+        { x: 1, y: 1 },
+        { x: 2, y: 2 },
+        { x: 3, y: 3 }
+      ]);
+    });
   });
 
   describe("#findWalkable", function() {
@@ -252,7 +296,7 @@ describe("Pathfinding", function() {
         walkableTiles: [1]
       });
 
-      const path = await Pathfinding.findWalkable(grid, 1, 2);
+      const path = await Pathfinding.findWalkable(grid, { x: 1, y: 2 });
       assert.deepEqual(path, [
         { x: 1, y: 2 },
         { x: 0, y: 2 },
@@ -278,7 +322,7 @@ describe("Pathfinding", function() {
       grid.addUnwalkableCoord(0, 3);
       grid.addUnwalkableCoord(1, 3);
 
-      const path = await Pathfinding.findWalkable(grid, 1, 2);
+      const path = await Pathfinding.findWalkable(grid, { x: 1, y: 2 });
       assert.deepEqual(path, [
         { x: 1, y: 2 },
         { x: 0, y: 2 },
@@ -304,7 +348,7 @@ describe("Pathfinding", function() {
       grid.addUnstoppableCoord(0, 3);
       grid.addUnstoppableCoord(1, 3);
 
-      const path = await Pathfinding.findWalkable(grid, 1, 2);
+      const path = await Pathfinding.findWalkable(grid, { x: 1, y: 2 });
       assert.deepEqual(path, [
         { x: 1, y: 2 },
         { x: 0, y: 2 },
@@ -329,7 +373,7 @@ describe("Pathfinding", function() {
         walkableTiles: [1]
       });
 
-      let path = await Pathfinding.findWalkable(grid, 1, 2, 1);
+      let path = await Pathfinding.findWalkable(grid, { x: 1, y: 2 }, 1);
       assert.deepEqual(path, [
         { x: 1, y: 2 },
         { x: 0, y: 2 },
@@ -337,7 +381,7 @@ describe("Pathfinding", function() {
         { x: 1, y: 3 }
       ]);
 
-      path = await Pathfinding.findWalkable(grid, 1, 2, 4);
+      path = await Pathfinding.findWalkable(grid, { x: 1, y: 2 }, 4);
       assert.deepEqual(path, [
         { x: 1, y: 2 },
         { x: 0, y: 2 },
@@ -370,7 +414,7 @@ describe("Pathfinding", function() {
         walkableTiles: [1]
       });
 
-      const path = await Pathfinding.findWalkable(grid, 1, 2, 0);
+      const path = await Pathfinding.findWalkable(grid, { x: 1, y: 2 }, 0);
       assert.deepEqual(path, [
         { x: 1, y: 2 },
       ]);
@@ -388,8 +432,52 @@ describe("Pathfinding", function() {
         walkableTiles: []
       });
 
-      const path = await Pathfinding.findWalkable(grid, 1, 2, 4);
+      const path = await Pathfinding.findWalkable(grid, { x: 1, y: 2 }, 4);
       assert.deepEqual(path, []);
+    });
+
+    it("it navigates hex grids", async function() {
+      const grid = new Grid({
+        tiles: [
+          [1, 0, 1, 0, 1],
+          [0, 1, 0, 0, 1],
+          [1, 0, 1, 0, 1],
+          [0, 1, 0, 0, 1],
+          [1, 1, 0, 1, 1]
+        ],
+        walkableTiles: [1],
+        type: GridType.hex
+      });
+
+      const path = await Pathfinding.findWalkable(grid,  { x: 1, y: 1 })
+      assert.deepEqual(path, [
+        { x: 1, y: 1 },
+        { x: 2, y: 0 },
+        { x: 0, y: 2 }
+      ]);
+    });
+
+    it("it navigates intercardinal grids", async function() {
+      const grid = new Grid({
+        tiles: [
+          [1, 0, 0, 0, 0],
+          [0, 1, 0, 0, 0],
+          [0, 1, 0, 0, 0],
+          [1, 0, 0, 0, 0],
+          [0, 1, 0, 0, 0]
+        ],
+        walkableTiles: [1],
+        type: GridType.intercardinal
+      });
+
+      const path = await Pathfinding.findWalkable(grid, { x: 1, y: 1 })
+      assert.deepEqual(path, [
+        { x: 1, y: 1 },
+        { x: 1, y: 2 },
+        { x: 0, y: 0 },
+        { x: 0, y: 3 },
+        { x: 1, y: 4 }
+      ]);
     });
   });
 });

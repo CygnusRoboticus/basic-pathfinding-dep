@@ -36,8 +36,7 @@ export default class Pathfinding {
 
   static async findWalkable(
     grid: Grid,
-    x: number,
-    y: number,
+    { x, y }: { x: number, y: number },
     costThreshold?: number
   ) {
     const search = new Search({
@@ -75,17 +74,37 @@ export default class Pathfinding {
         node = search.nodeQueue.pop();
 
         node.visited = true;
-        if (node.y > 0) {
+        //cardinal
+        if (grid.inGrid(node.x, node.y - 1)) {
           Pathfinding.checkAdjacentNode(search, grid, node, 0, -1);
         }
-        if (node.x < grid.tiles[node.y].length - 1) {
+        //hex & intercardinal
+        if (!grid.isCardinal && grid.inGrid(node.x + 1, node.y - 1)) {
+          Pathfinding.checkAdjacentNode(search, grid, node, 1, -1);
+        }
+        //cardinal
+        if (grid.inGrid(node.x + 1, node.y)) {
           Pathfinding.checkAdjacentNode(search, grid, node, 1, 0);
         }
-        if (node.y < grid.tiles.length - 1) {
+        //intercardinal
+        if (grid.isIntercardinal && grid.inGrid(node.x + 1, node.y + 1)) {
+          Pathfinding.checkAdjacentNode(search, grid, node, 1, 1);
+        }
+        //cardinal
+        if (grid.inGrid(node.x, node.y + 1)) {
           Pathfinding.checkAdjacentNode(search, grid, node, 0, 1);
         }
-        if (node.x > 0) {
+        //hex & intercardinal
+        if (!grid.isCardinal && grid.inGrid(node.x - 1, node.y + 1)) {
+          Pathfinding.checkAdjacentNode(search, grid, node, -1, 1);
+        }
+        //cardinal
+        if (grid.inGrid(node.x - 1, node.y)) {
           Pathfinding.checkAdjacentNode(search, grid, node, -1, 0);
+        }
+        //intercardinal
+        if (grid.isIntercardinal && grid.inGrid(node.x - 1, node.y - 1)) {
+          Pathfinding.checkAdjacentNode(search, grid, node, -1, -1);
         }
       }
     });
