@@ -4,7 +4,7 @@ import Node from './node';
 import Coord from './coord';
 export default class Pathfinding {
     static findPath(grid: Grid, startX: number, startY: number, endX: number, endY: number, costThreshold?: number): Promise<any>;
-    static findReachable(grid: Grid, x: number, y: number, costThreshold?: number): Promise<Coord[]>;
+    static findWalkable(grid: Grid, x: number, y: number, costThreshold?: number): Promise<Coord[]>;
     static calculate(search: Search, grid: Grid): Promise<Search>;
     static checkAdjacentNode(search: Search, grid: Grid, sourceNode: Node, x: number, y: number): void;
     static canAfford(sourceNode: Node, cost: number, costThreshold?: number): boolean;

@@ -34,7 +34,7 @@ export default class Pathfinding {
       null;
   }
 
-  static async findReachable(
+  static async findWalkable(
     grid: Grid,
     x: number,
     y: number,

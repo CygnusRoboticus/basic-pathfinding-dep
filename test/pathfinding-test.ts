@@ -239,7 +239,7 @@ describe("Pathfinding", function() {
     });
   });
 
-  describe("#findReachable", function() {
+  describe("#findWalkable", function() {
     it("only traverses walkableTiles", async function() {
       const grid = new Grid({
         tiles: [
@@ -252,7 +252,7 @@ describe("Pathfinding", function() {
         walkableTiles: [1]
       });
 
-      const path = await Pathfinding.findReachable(grid, 1, 2);
+      const path = await Pathfinding.findWalkable(grid, 1, 2);
       assert.deepEqual(path, [
         { x: 1, y: 2 },
         { x: 0, y: 2 },
@@ -278,7 +278,7 @@ describe("Pathfinding", function() {
       grid.addUnwalkableCoord(0, 3);
       grid.addUnwalkableCoord(1, 3);
 
-      const path = await Pathfinding.findReachable(grid, 1, 2);
+      const path = await Pathfinding.findWalkable(grid, 1, 2);
       assert.deepEqual(path, [
         { x: 1, y: 2 },
         { x: 0, y: 2 },
@@ -304,7 +304,7 @@ describe("Pathfinding", function() {
       grid.addUnstoppableCoord(0, 3);
       grid.addUnstoppableCoord(1, 3);
 
-      const path = await Pathfinding.findReachable(grid, 1, 2);
+      const path = await Pathfinding.findWalkable(grid, 1, 2);
       assert.deepEqual(path, [
         { x: 1, y: 2 },
         { x: 0, y: 2 },
@@ -329,7 +329,7 @@ describe("Pathfinding", function() {
         walkableTiles: [1]
       });
 
-      let path = await Pathfinding.findReachable(grid, 1, 2, 1);
+      let path = await Pathfinding.findWalkable(grid, 1, 2, 1);
       assert.deepEqual(path, [
         { x: 1, y: 2 },
         { x: 0, y: 2 },
@@ -337,7 +337,7 @@ describe("Pathfinding", function() {
         { x: 1, y: 3 }
       ]);
 
-      path = await Pathfinding.findReachable(grid, 1, 2, 4);
+      path = await Pathfinding.findWalkable(grid, 1, 2, 4);
       assert.deepEqual(path, [
         { x: 1, y: 2 },
         { x: 0, y: 2 },
@@ -356,6 +356,40 @@ describe("Pathfinding", function() {
         { x: 2, y: 4 },
         { x: 3, y: 4 }
       ]);
+    });
+
+    it("reports the start square when costThreshold = 0", async function() {
+      const grid = new Grid({
+        tiles: [
+          [1, 1, 1, 1, 1],
+          [1, 1, 1, 1, 1],
+          [1, 1, 1, 1, 1],
+          [1, 1, 1, 1, 1],
+          [1, 1, 1, 1, 1]
+        ],
+        walkableTiles: [1]
+      });
+
+      const path = await Pathfinding.findWalkable(grid, 1, 2, 0);
+      assert.deepEqual(path, [
+        { x: 1, y: 2 },
+      ]);
+    });
+
+    it("doesn't report own tile when it is not walkable", async function() {
+      const grid = new Grid({
+        tiles: [
+          [1, 1, 1, 1, 1],
+          [1, 1, 1, 1, 1],
+          [1, 1, 1, 1, 1],
+          [1, 1, 1, 1, 1],
+          [1, 1, 1, 1, 1]
+        ],
+        walkableTiles: []
+      });
+
+      const path = await Pathfinding.findWalkable(grid, 1, 2, 4);
+      assert.deepEqual(path, []);
     });
   });
 });
