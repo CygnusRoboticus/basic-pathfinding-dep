@@ -1,10 +1,11 @@
 {
   "name": "basic-pathing",
   "version": "1.0.0",
-  "description": "",
-  "main": "./lib/index.js",
+  "main": "dist/basic-pathfinding.js",
+  "types": "dist/basic-pathfinding.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "webpack && webpack --minify",
+    "lint": "tslint -p tsconfig.json",
     "test": "cross-env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\"}' mocha -r ts-node/register test/**/*.ts"
   },
   "repository": {
@@ -23,12 +24,33 @@
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/heap": "^0.2.28",
-    "@types/mocha": "^5.2.5",
-    "@types/node": "^10.12.15",
+    "@types/mocha": "^5.2.6",
+    "@types/node": "^10.12.26",
     "chai": "^4.2.0",
+    "compression-webpack-plugin": "^2.0.0",
     "cross-env": "^5.2.0",
     "mocha": "^5.2.0",
-    "ts-node": "^7.0.1",
-    "typescript": "^3.2.2"
-  }
+    "ts-loader": "^5.3.3",
+    "ts-node": "^8.0.2",
+    "tslint": "^5.12.1",
+    "typescript": "^3.3.3",
+    "uglifyjs-webpack-plugin": "^2.1.1",
+    "webpack": "^4.29.3",
+    "webpack-cli": "^3.2.3"
+  },
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "files": [
+    "dist",
+    "dist.browser"
+  ],
+  "keywords": [
+    "typescript",
+    "pathfinding",
+    "tile",
+    "map"
+  ],
+  "description": "Tile-based A* pathfinding in typescript"
 }
