@@ -1,10 +1,10 @@
-import Search from './search';
+import Coord from './coord';
 import Grid from './grid';
 import Node from './node';
-import Coord from './coord';
+import Search from './search';
 
 export default class Pathfinding {
-  static async findPath(
+  public static async findPath(
     grid: Grid,
     startX: number,
     startY: number,
@@ -19,11 +19,15 @@ export default class Pathfinding {
     }
 
     const search = new Search({
-      startX, startY, endX, endY, costThreshold
+      costThreshold,
+      endX,
+      endY,
+      startX,
+      startY
     });
     const startNode = Pathfinding.coordinateToNode(
       search, null, startX, startY, 0
-    )
+    );
     search.push(startNode);
 
     await Pathfinding.calculate(search, grid);
@@ -34,15 +38,17 @@ export default class Pathfinding {
       null;
   }
 
-  static async findWalkable(
+  public static async findWalkable(
     grid: Grid,
     coords: Array<{ x: number, y: number }> | { x: number, y: number },
     costThreshold?: number
   ) {
     coords = coords instanceof Array ? coords : [coords];
-    const { x, y } = coords[0];
+    const { x: startX, y: startY } = coords[0];
     const search = new Search({
-      startX: x, startY: y, costThreshold
+      costThreshold,
+      startX,
+      startY
     });
     coords.forEach(({ x, y }) => {
       const node = Pathfinding.coordinateToNode(
@@ -54,14 +60,14 @@ export default class Pathfinding {
     await Pathfinding.calculate(search, grid);
 
     return search.traversedNodes.
-      filter(node => grid.isCoordStoppable(node.x, node.y)).
-      map(node => new Coord(node.x, node.y));
+      filter((node) => grid.isCoordStoppable(node.x, node.y)).
+      map((node) => new Coord(node.x, node.y));
   }
 
-  static calculate(search: Search, grid: Grid): Promise<Search> {
-    return new Promise(resolve => {
+  public static calculate(search: Search, grid: Grid): Promise<Search> {
+    return new Promise((resolve) => {
       while (true) {
-        //fully traversed
+        // fully traversed
         if (search.nodeQueue.size() === 0) {
           resolve(search);
           return;
@@ -69,7 +75,7 @@ export default class Pathfinding {
 
         let node = search.nodeQueue.peek();
 
-        //path found
+        // path found
         if (search.endX === node.x && search.endY === node.y) {
           resolve(search);
           return;
@@ -78,35 +84,35 @@ export default class Pathfinding {
         node = search.nodeQueue.pop();
 
         node.visited = true;
-        //cardinal
+        // cardinal
         if (grid.inGrid(node.x, node.y - 1)) {
           Pathfinding.checkAdjacentNode(search, grid, node, 0, -1);
         }
-        //hex & intercardinal
+        // hex & intercardinal
         if (!grid.isCardinal && grid.inGrid(node.x + 1, node.y - 1)) {
           Pathfinding.checkAdjacentNode(search, grid, node, 1, -1);
         }
-        //cardinal
+        // cardinal
         if (grid.inGrid(node.x + 1, node.y)) {
           Pathfinding.checkAdjacentNode(search, grid, node, 1, 0);
         }
-        //intercardinal
+        // intercardinal
         if (grid.isIntercardinal && grid.inGrid(node.x + 1, node.y + 1)) {
           Pathfinding.checkAdjacentNode(search, grid, node, 1, 1);
         }
-        //cardinal
+        // cardinal
         if (grid.inGrid(node.x, node.y + 1)) {
           Pathfinding.checkAdjacentNode(search, grid, node, 0, 1);
         }
-        //hex & intercardinal
+        // hex & intercardinal
         if (!grid.isCardinal && grid.inGrid(node.x - 1, node.y + 1)) {
           Pathfinding.checkAdjacentNode(search, grid, node, -1, 1);
         }
-        //cardinal
+        // cardinal
         if (grid.inGrid(node.x - 1, node.y)) {
           Pathfinding.checkAdjacentNode(search, grid, node, -1, 0);
         }
-        //intercardinal
+        // intercardinal
         if (grid.isIntercardinal && grid.inGrid(node.x - 1, node.y - 1)) {
           Pathfinding.checkAdjacentNode(search, grid, node, -1, -1);
         }
@@ -114,7 +120,7 @@ export default class Pathfinding {
     });
   }
 
-  static checkAdjacentNode(
+  public static checkAdjacentNode(
     search: Search,
     grid: Grid,
     sourceNode: Node,
@@ -147,7 +153,7 @@ export default class Pathfinding {
     }
   }
 
-  static canAfford(
+  public static canAfford(
     sourceNode: Node,
     cost: number,
     costThreshold?: number
@@ -158,7 +164,7 @@ export default class Pathfinding {
     return true;
   }
 
-  static coordinateToNode(
+  public static coordinateToNode(
     search: Search,
     parent: Node | null,
     x: number,
@@ -174,22 +180,22 @@ export default class Pathfinding {
     }
 
     const node = new Node({
-      parent,
-      x,
-      y,
       cost: parent ? parent.cost + cost : cost,
       distanceToTarget: search.endX && search.endY ?
         Pathfinding.getDistance(x, y, search.endX, search.endY) :
-        1
+        1,
+      parent,
+      x,
+      y
     });
 
     search.cacheNode(node);
     return node;
   }
 
-  static getDistance(x1: number, y1: number, x2: number, y2: number): number {
-    var dx = Math.abs(x1 - x2);
-    var dy = Math.abs(y1 - y2);
+  public static getDistance(x1: number, y1: number, x2: number, y2: number): number {
+    const dx = Math.abs(x1 - x2);
+    const dy = Math.abs(y1 - y2);
     return dx + dy;
   }
 }

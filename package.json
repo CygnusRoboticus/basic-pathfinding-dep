@@ -5,7 +5,7 @@
   "types": "dist/basic-pathfinding.d.ts",
   "scripts": {
     "build": "webpack && webpack --minify",
-    "lint": "tslint -p tsconfig.json",
+    "lint:ts": "tslint -c tslint.json 'src/**/*.ts' 'test/**/*.ts'",
     "test": "cross-env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\"}' mocha -r ts-node/register test/**/*.ts"
   },
   "repository": {
@@ -39,12 +39,11 @@
     "webpack-cli": "^3.2.3"
   },
   "directories": {
-    "lib": "lib",
+    "src": "src",
     "test": "test"
   },
   "files": [
-    "dist",
-    "dist.browser"
+    "dist"
   ],
   "keywords": [
     "typescript",

@@ -1,3 +1,40 @@
 {
-  "extends": ["tslint:recommended"]
+  "defaultSeverity": "error",
+  "extends": [
+    "tslint:recommended"
+  ],
+  "jsRules": {},
+  "rules": {
+    "quotemark": {
+      "options": ["single"]
+    },
+    "object-literal-sort-keys": false,
+    "max-line-length": [true,
+      {
+        "limit": 80,
+        "ignore-pattern": "^import|^export|class|interface|function|public|private|protected"
+      }
+    ],
+    "no-shadowed-variable": [
+      false,
+      {
+        "class": false,
+        "enum": false,
+        "function": false,
+        "interface": false,
+        "namespace": false,
+        "typeAlias": false,
+        "typeParameter": false
+      }
+    ],
+    "only-arrow-functions": false,
+    "trailing-comma": [true,
+      {
+        "multiline": "never",
+        "singleline": "never"
+      }
+    ],
+    "forin" :false
+  },
+  "rulesDirectory": []
 }

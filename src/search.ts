@@ -1,8 +1,29 @@
-const Heap = require('heap');
-import Node from './node';
 import Coord from './coord';
+import Node from './node';
+
+const Heap = require('heap');
 
 export default class Search {
+  public startX: number;
+  public startY: number;
+  public endX?: number;
+  public endY?: number;
+  public costThreshold?: number;
+
+  public cache: Map<number, Map<number, Node>>;
+  public nodeQueue: any;
+
+  get traversedNodes(): Coord[] {
+    const nodes: Coord[] = [];
+    this.cache.forEach((map, y) => {
+      map.forEach((node, x) => {
+        nodes.push(new Coord(x, y));
+      });
+    });
+
+    return nodes;
+  }
+
   constructor({
     startX,
     startY,
@@ -28,31 +49,11 @@ export default class Search {
     });
   }
 
-  startX: number;
-  startY: number;
-  endX?: number;
-  endY?: number;
-  costThreshold?: number;
-
-  cache: Map<number, Map<number, Node>>;
-  nodeQueue: any;
-
-  push(node: Node) {
+  public push(node: Node) {
     this.nodeQueue.push(node);
   }
 
-  get traversedNodes(): Coord[] {
-    const nodes: Coord[] = [];
-    this.cache.forEach((map, y) => {
-      map.forEach((node, x) => {
-        nodes.push(new Coord(x, y));
-      });
-    });
-
-    return nodes;
-  }
-
-  cacheNode(node: Node) {
+  public cacheNode(node: Node) {
     this.cache.get(node.y)!.set(node.x, node);
   }
 }

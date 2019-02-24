@@ -1,10 +1,10 @@
-import "mocha";
-import { assert } from "chai";
-import Pathfinding, { Grid } from "../src/index";
+import { assert } from 'chai';
+import 'mocha';
+import Pathfinding, { Grid } from '../src/index';
 
-describe("Grid", function() {
-  describe("#toCoordMap", function() {
-    it("converts list of coords to map of coords", function() {
+describe('Grid', function() {
+  describe('#toCoordMap', function() {
+    it('converts list of coords to map of coords', function() {
       const coords = [
         { x: 0, y: 0 },
         { x: 0, y: 1 },
@@ -31,7 +31,7 @@ describe("Grid", function() {
       ]));
     });
 
-    it("accepts a default map", function() {
+    it('accepts a default map', function() {
       const coords = [
         { x: 0, y: 0 }
       ];
@@ -41,7 +41,7 @@ describe("Grid", function() {
         ])]
       ]);
 
-      const coordMap = Grid.toCoordMap(coords, defaultMap)
+      const coordMap = Grid.toCoordMap(coords, defaultMap);
       assert.deepEqual(coordMap, new Map([
         [0, new Map([
           [0, true]
@@ -52,12 +52,12 @@ describe("Grid", function() {
       ]));
     });
 
-    it("accepts a default value", function() {
+    it('accepts a default value', function() {
       const coords = [
         { x: 0, y: 0 }
       ];
 
-      const coordMap = Grid.toCoordMap(coords, new Map(), false)
+      const coordMap = Grid.toCoordMap(coords, new Map(), false);
       assert.deepEqual(coordMap, new Map([
         [0, new Map([
           [0, false]
