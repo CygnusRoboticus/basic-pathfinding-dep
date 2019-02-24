@@ -1,6 +1,17 @@
 import Coord from './coord';
 
 export default class Node {
+  public parent: Node | null;
+  public x: number;
+  public y: number;
+  public cost: number;
+  public distanceToTarget: number;
+  public visited: boolean;
+
+  get guessTotalCost() {
+    return this.cost + this.distanceToTarget;
+  }
+
   constructor({
     parent,
     x,
@@ -22,18 +33,7 @@ export default class Node {
     this.visited = false;
   }
 
-  parent: Node | null;
-  x: number;
-  y: number;
-  cost: number;
-  distanceToTarget: number;
-  visited: boolean;
-
-  get guessTotalCost() {
-    return this.cost + this.distanceToTarget;
-  }
-
-  formatPath() {
+  public formatPath() {
     const path: Coord[] = [];
 
     path.push(new Coord(this.x, this.y));

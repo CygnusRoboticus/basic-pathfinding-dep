@@ -1,10 +1,10 @@
-import "mocha";
-import { assert } from "chai";
-import Pathfinding, { Grid, GridType } from "../src/index";
+import { assert } from 'chai';
+import 'mocha';
+import Pathfinding, { Grid, GridType } from '../src/index';
 
-describe("Pathfinding", function() {
-  describe("#findPath", function() {
-    it("only traverses walkableTiles", async function() {
+describe('Pathfinding', function() {
+  describe('#findPath', function() {
+    it('only traverses walkableTiles', async function() {
       const grid = new Grid({
         tiles: [
           [1, 1, 0, 1, 1],
@@ -26,7 +26,7 @@ describe("Pathfinding", function() {
       ]);
     });
 
-    it("accepts an alternative input", async function() {
+    it('accepts an alternative input', async function() {
       const grid = new Grid({
         tiles: [
           [1, 1, 0, 1, 1],
@@ -38,7 +38,7 @@ describe("Pathfinding", function() {
         walkableTiles: [1]
       });
 
-      const path = await Pathfinding.findWalkable(grid, { x: 1, y: 2 })
+      const path = await Pathfinding.findWalkable(grid, { x: 1, y: 2 });
       assert.deepEqual(path, [
         { x: 1, y: 2 },
         { x: 0, y: 2 },
@@ -49,7 +49,7 @@ describe("Pathfinding", function() {
       ]);
     });
 
-    it("searches from multiple sources", async function() {
+    it('searches from multiple sources', async function() {
       const grid = new Grid({
         tiles: [
           [1, 1, 0, 1, 1],
@@ -81,7 +81,7 @@ describe("Pathfinding", function() {
       ]);
     });
 
-    it("avoids unwalkableCoords", async function() {
+    it('avoids unwalkableCoords', async function() {
       const grid = new Grid({
         tiles: [
           [1, 1, 0, 1, 1],
@@ -110,7 +110,7 @@ describe("Pathfinding", function() {
       ]);
     });
 
-    it("early returns when start === end", async function() {
+    it('early returns when start === end', async function() {
       const grid = new Grid({
         tiles: [
           [1, 1, 0, 1, 1],
@@ -126,7 +126,7 @@ describe("Pathfinding", function() {
       assert.deepEqual(path, []);
     });
 
-    it("returns null when it cannot find a path", async function() {
+    it('returns null when it cannot find a path', async function() {
       const grid = new Grid({
         tiles: [
           [1, 1, 0, 1, 1],
@@ -142,7 +142,7 @@ describe("Pathfinding", function() {
       assert.isNull(path);
     });
 
-    it("returns null when target is not walkable", async function() {
+    it('returns null when target is not walkable', async function() {
       const grid = new Grid({
         tiles: [
           [1, 1, 1, 1, 1],
@@ -158,7 +158,7 @@ describe("Pathfinding", function() {
       assert.isNull(path);
     });
 
-    it("returns null when target is unwalkable", async function() {
+    it('returns null when target is unwalkable', async function() {
       const grid = new Grid({
         tiles: [
           [1, 1, 1, 1, 1],
@@ -175,7 +175,7 @@ describe("Pathfinding", function() {
       assert.isNull(path);
     });
 
-    it("returns null when target is unstoppable", async function() {
+    it('returns null when target is unstoppable', async function() {
       const grid = new Grid({
         tiles: [
           [1, 1, 1, 1, 1],
@@ -192,7 +192,7 @@ describe("Pathfinding", function() {
       assert.isNull(path);
     });
 
-    it("prefers straight paths", async function() {
+    it('prefers straight paths', async function() {
       const grid = new Grid({
         tiles: [
           [0, 0, 0, 0, 0],
@@ -214,7 +214,7 @@ describe("Pathfinding", function() {
       ]);
     });
 
-    it("respects costs", async function() {
+    it('respects costs', async function() {
       const grid = new Grid({
         tiles: [
           [0, 2, 2, 2, 0],
@@ -223,7 +223,7 @@ describe("Pathfinding", function() {
           [0, 1, 1, 1, 0],
           [0, 1, 1, 1, 0]
         ],
-        walkableTiles: [0, 1, 2],
+        walkableTiles: [0, 1, 2]
       });
 
       grid.setTileCost(2, 4);
@@ -240,7 +240,7 @@ describe("Pathfinding", function() {
       ]);
     });
 
-    it("respects extraCosts", async function() {
+    it('respects extraCosts', async function() {
       const grid = new Grid({
         tiles: [
           [0, 2, 2, 2, 0],
@@ -249,7 +249,7 @@ describe("Pathfinding", function() {
           [0, 1, 1, 1, 0],
           [0, 1, 1, 1, 0]
         ],
-        walkableTiles: [0, 1],
+        walkableTiles: [0, 1]
       });
 
       grid.addExtraCost(1, 3, 4);
@@ -269,7 +269,7 @@ describe("Pathfinding", function() {
       ]);
     });
 
-    it("cancels early with costThreshold", async function() {
+    it('cancels early with costThreshold', async function() {
       const grid = new Grid({
         tiles: [
           [1, 1, 0, 1, 1],
@@ -293,7 +293,7 @@ describe("Pathfinding", function() {
       ]);
     });
 
-    it("it navigates hex grids", async function() {
+    it('it navigates hex grids', async function() {
       const grid = new Grid({
         tiles: [
           [1, 1, 0, 1, 1],
@@ -306,7 +306,7 @@ describe("Pathfinding", function() {
         type: GridType.hex
       });
 
-      const path = await Pathfinding.findPath(grid, 1, 1, 2, 2)
+      const path = await Pathfinding.findPath(grid, 1, 1, 2, 2);
       assert.deepEqual(path, [
         { x: 1, y: 1 },
         { x: 0, y: 2 },
@@ -316,7 +316,7 @@ describe("Pathfinding", function() {
       ]);
     });
 
-    it("it navigates intercardinal grids", async function() {
+    it('it navigates intercardinal grids', async function() {
       const grid = new Grid({
         tiles: [
           [1, 1, 0, 1, 1],
@@ -329,7 +329,7 @@ describe("Pathfinding", function() {
         type: GridType.intercardinal
       });
 
-      const path = await Pathfinding.findPath(grid, 1, 1, 3, 3)
+      const path = await Pathfinding.findPath(grid, 1, 1, 3, 3);
       assert.deepEqual(path, [
         { x: 1, y: 1 },
         { x: 2, y: 2 },
@@ -338,8 +338,8 @@ describe("Pathfinding", function() {
     });
   });
 
-  describe("#findWalkable", function() {
-    it("only traverses walkableTiles", async function() {
+  describe('#findWalkable', function() {
+    it('only traverses walkableTiles', async function() {
       const grid = new Grid({
         tiles: [
           [1, 1, 0, 1, 1],
@@ -362,7 +362,7 @@ describe("Pathfinding", function() {
       ]);
     });
 
-    it("avoids unwalkableCoords", async function() {
+    it('avoids unwalkableCoords', async function() {
       const grid = new Grid({
         tiles: [
           [1, 1, 0, 1, 1],
@@ -388,7 +388,7 @@ describe("Pathfinding", function() {
       ]);
     });
 
-    it("avoids unstoppableCoords", async function() {
+    it('avoids unstoppableCoords', async function() {
       const grid = new Grid({
         tiles: [
           [1, 1, 0, 1, 1],
@@ -416,7 +416,7 @@ describe("Pathfinding", function() {
       ]);
     });
 
-    it("cancels early with costThreshold", async function() {
+    it('cancels early with costThreshold', async function() {
       const grid = new Grid({
         tiles: [
           [1, 1, 0, 1, 1],
@@ -457,7 +457,7 @@ describe("Pathfinding", function() {
       ]);
     });
 
-    it("reports the start square when costThreshold = 0", async function() {
+    it('reports the start square when costThreshold = 0', async function() {
       const grid = new Grid({
         tiles: [
           [1, 1, 1, 1, 1],
@@ -471,11 +471,11 @@ describe("Pathfinding", function() {
 
       const path = await Pathfinding.findWalkable(grid, { x: 1, y: 2 }, 0);
       assert.deepEqual(path, [
-        { x: 1, y: 2 },
+        { x: 1, y: 2 }
       ]);
     });
 
-    it("doesn't report own tile when it is not walkable", async function() {
+    it('doesn\'t report own tile when it is not walkable', async function() {
       const grid = new Grid({
         tiles: [
           [1, 1, 1, 1, 1],
@@ -491,7 +491,7 @@ describe("Pathfinding", function() {
       assert.deepEqual(path, []);
     });
 
-    it("it navigates hex grids", async function() {
+    it('it navigates hex grids', async function() {
       const grid = new Grid({
         tiles: [
           [1, 0, 1, 0, 1],
@@ -504,7 +504,7 @@ describe("Pathfinding", function() {
         type: GridType.hex
       });
 
-      const path = await Pathfinding.findWalkable(grid,  { x: 1, y: 1 })
+      const path = await Pathfinding.findWalkable(grid,  { x: 1, y: 1 });
       assert.deepEqual(path, [
         { x: 1, y: 1 },
         { x: 2, y: 0 },
@@ -512,7 +512,7 @@ describe("Pathfinding", function() {
       ]);
     });
 
-    it("it navigates intercardinal grids", async function() {
+    it('it navigates intercardinal grids', async function() {
       const grid = new Grid({
         tiles: [
           [1, 0, 0, 0, 0],
@@ -525,7 +525,7 @@ describe("Pathfinding", function() {
         type: GridType.intercardinal
       });
 
-      const path = await Pathfinding.findWalkable(grid, { x: 1, y: 1 })
+      const path = await Pathfinding.findWalkable(grid, { x: 1, y: 1 });
       assert.deepEqual(path, [
         { x: 1, y: 1 },
         { x: 1, y: 2 },

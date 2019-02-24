@@ -1,16 +1,28 @@
-import Pathfinding from './pathfinding';
+import Coord from './coord';
 import Grid from './grid';
 import { GridType } from './grid';
 import Node from './node';
-import Coord from './coord';
+import Pathfinding from './pathfinding';
 import Search from './search';
 
 export {
+  Coord,
   Grid,
   GridType,
   Node,
-  Coord,
   Search
-}
+};
 
 export default Pathfinding;
+
+if (global) {
+  // @ts-ignore
+  global.BasicPathfinding = {
+    Pathfinding,
+    Coord,
+    Grid,
+    GridType,
+    Node,
+    Search
+  };
+}

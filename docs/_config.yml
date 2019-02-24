@@ -1,1 +1,4 @@
 theme: jekyll-theme-slate
+title: Basic Pathfinding
+description: Tile-based A* pathfinding in typescript
+show_downloads: true

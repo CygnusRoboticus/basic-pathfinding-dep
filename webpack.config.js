@@ -20,16 +20,8 @@ const baseConfig = {
   ]
 }
 
-const server = {
-  target: 'node',
-  output: {
-    filename: 'basic-pathfinding.node.js',
-    path: path.resolve(__dirname, 'dist')
-  },
-  ...baseConfig
-};
-
-const client = {
+const webConfig = {
+  target: 'web',
   output: {
     filename: 'basic-pathfinding.js',
     path: path.resolve(__dirname, 'dist')
@@ -37,4 +29,4 @@ const client = {
   ...baseConfig
 };
 
-module.exports = [server, client];
+module.exports = [webConfig];
