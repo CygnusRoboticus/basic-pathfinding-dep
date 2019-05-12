@@ -23,6 +23,7 @@ const baseConfig = {
 const webConfig = {
   target: 'web',
   output: {
+    libraryTarget: 'commonjs2',
     filename: 'basic-pathfinding.js',
     path: path.resolve(__dirname, 'dist')
   },
