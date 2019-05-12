@@ -8,7 +8,7 @@ export default class Grid {
   public static toCoordMap(
     coords: Array<{x: number, y: number}>,
     map: Map<number, Map<number, any>> = new Map<number, Map<number, any>>(),
-    value: any = true
+    value: boolean = true
   ) {
     coords.forEach(({ x: x, y: y }) => {
       if (!map.has(y)) {
@@ -56,16 +56,20 @@ export default class Grid {
   constructor({
     tiles = [],
     walkableTiles = [],
+    unwalkableCoords = new Map<number, Map<number, boolean>>(),
+    unstoppableCoords = new Map<number, Map<number, boolean>>(),
     type = GridType.cardinal
   }: {
     tiles: number[][],
-    walkableTiles?: number[]
+    walkableTiles?: number[],
+    unwalkableCoords?: Map<number, Map<number, boolean>>,
+    unstoppableCoords?: Map<number, Map<number, boolean>>,
     type?: GridType
   }) {
     this.costs = new Map<number, number>();
     this.extraCosts = new Map<number, Map<number, number>>();
-    this.unwalkableCoords = new Map<number, Map<number, any>>();
-    this.unstoppableCoords = new Map<number, Map<number, any>>();
+    this.unwalkableCoords = unwalkableCoords;
+    this.unstoppableCoords = unstoppableCoords;
     this.type = type;
 
     this.pTiles = [];
