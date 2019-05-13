@@ -1,7 +1,7 @@
 {
   "name": "basic-pathing",
   "version": "1.0.0",
-  "main": "dist/basic-pathfinding.js",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "webpack && webpack --minify",
