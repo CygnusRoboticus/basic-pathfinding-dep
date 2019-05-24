@@ -1,54 +1,56 @@
-import Coord from './coord';
+import { Coord, ICoord } from './coord';
 import Grid from './grid';
-import Node from './node';
-import Search from './search';
+import { Node } from './node';
+import { Search } from './search';
 
 export default class Pathfinding {
   public static async findPath(
     grid: Grid,
-    startX: number,
-    startY: number,
-    endX: number,
-    endY: number,
-    costThreshold?: number
+    start: ICoord,
+    end: ICoord,
+    opts: {
+      costThreshold?: number,
+      endOnUnstoppable?: boolean
+    } = {}
   ) {
-    if (startX === endX && startY === endY) {
-      return [];
-    } else if (!grid.isCoordStoppable(endX, endY)) {
+    if (Coord.equals(start, end)) {
+      return [start];
+    } else if (!grid.isCoordStoppable(end.x, end.y) && !opts.endOnUnstoppable) {
       return null;
     }
 
     const search = new Search({
-      costThreshold,
-      endX,
-      endY,
-      startX,
-      startY
+      start,
+      end,
+      opts
     });
     const startNode = Pathfinding.coordinateToNode(
-      search, null, startX, startY, 0
+      search, null, start.x, start.y, 0
     );
     search.push(startNode);
 
     await Pathfinding.calculate(search, grid);
 
     const node = search.nodeQueue.pop();
-    return node ?
+    const path = node ?
       node.formatPath() :
       null;
+
+    return path;
   }
 
   public static async findWalkable(
     grid: Grid,
-    coords: Array<{ x: number, y: number }> | { x: number, y: number },
-    costThreshold?: number
+    coords: ICoord | ICoord[],
+    opts: {
+      costThreshold?: number
+    } = {}
   ) {
     coords = coords instanceof Array ? coords : [coords];
     const { x: startX, y: startY } = coords[0];
     const search = new Search({
-      costThreshold,
-      startX,
-      startY
+      start: { x: startX, y: startY },
+      opts
     });
     coords.forEach(({ x, y }) => {
       const node = Pathfinding.coordinateToNode(
@@ -59,12 +61,14 @@ export default class Pathfinding {
 
     await Pathfinding.calculate(search, grid);
 
-    return search.traversedNodes.
-      filter((node) => grid.isCoordStoppable(node.x, node.y)).
-      map((node) => new Coord(node.x, node.y));
+    return search.traversedNodes.filter(
+      (node) => grid.isCoordWalkable(node.x, node.y)
+    ).map(
+      (node) => ({ x: node.x, y: node.y })
+    );
   }
 
-  public static calculate(search: Search, grid: Grid): Promise<Search> {
+  public static calculate(search: Search, grid: Grid) {
     return new Promise((resolve) => {
       while (true) {
         // fully traversed
@@ -76,7 +80,7 @@ export default class Pathfinding {
         let node = search.nodeQueue.peek();
 
         // path found
-        if (search.endX === node.x && search.endY === node.y) {
+        if (Coord.equals(search.end, node)) {
           resolve(search);
           return;
         }
@@ -179,15 +183,15 @@ export default class Pathfinding {
       search.cache.set(y, new Map<number, Node>());
     }
 
-    const node = new Node({
-      cost: parent ? parent.cost + cost : cost,
-      distanceToTarget: search.endX && search.endY ?
-        Pathfinding.getDistance(x, y, search.endX, search.endY) :
-        1,
+    const node = new Node(
       parent,
       x,
-      y
-    });
+      y,
+      parent ? parent.cost + cost : cost,
+      search.isPathing ?
+        Pathfinding.getDistance(x, y, search.end!.x, search.end!.y) :
+        1
+    );
 
     search.cacheNode(node);
     return node;

@@ -16,7 +16,9 @@ describe('Pathfinding', function() {
         walkableTiles: [1]
       });
 
-      const path = await Pathfinding.findPath(grid, 1, 2, 3, 2);
+      const path = await Pathfinding.findPath(
+        grid, { x: 1, y: 2 }, { x: 3, y: 2 }
+      );
       assert.deepEqual(path, [
         { x: 1, y: 2 },
         { x: 1, y: 3 },
@@ -96,7 +98,9 @@ describe('Pathfinding', function() {
       grid.addUnwalkableCoord(2, 3);
       grid.addUnwalkableCoord(3, 3);
 
-      const path = await Pathfinding.findPath(grid, 1, 2, 3, 2);
+      const path = await Pathfinding.findPath(
+        grid, { x: 1, y: 2 }, { x: 3, y: 2 }
+      );
       assert.deepEqual(path, [
         { x: 1, y: 2 },
         { x: 1, y: 3 },
@@ -122,8 +126,12 @@ describe('Pathfinding', function() {
         walkableTiles: [1]
       });
 
-      const path = await Pathfinding.findPath(grid, 1, 2, 1, 2);
-      assert.deepEqual(path, []);
+      const path = await Pathfinding.findPath(
+        grid, { x: 1, y: 2 }, { x: 1, y: 2 }
+      );
+      assert.deepEqual(path, [
+        { x: 1, y: 2 }
+      ]);
     });
 
     it('returns null when it cannot find a path', async function() {
@@ -138,7 +146,9 @@ describe('Pathfinding', function() {
         walkableTiles: [1]
       });
 
-      const path = await Pathfinding.findPath(grid, 0, 2, 4, 2);
+      const path = await Pathfinding.findPath(
+        grid, { x: 0, y: 2 }, { x: 4, y: 2 }
+      );
       assert.isNull(path);
     });
 
@@ -154,7 +164,9 @@ describe('Pathfinding', function() {
         walkableTiles: [1]
       });
 
-      const path = await Pathfinding.findPath(grid, 0, 2, 4, 2);
+      const path = await Pathfinding.findPath(
+        grid, { x: 0, y: 2 }, { x: 4, y: 2 }
+      );
       assert.isNull(path);
     });
 
@@ -171,7 +183,9 @@ describe('Pathfinding', function() {
       });
       grid.addUnwalkableCoord(4, 2);
 
-      const path = await Pathfinding.findPath(grid, 0, 2, 4, 2);
+      const path = await Pathfinding.findPath(
+        grid, { x: 0, y: 2 }, { x: 4, y: 2 }
+      );
       assert.isNull(path);
     });
 
@@ -188,8 +202,21 @@ describe('Pathfinding', function() {
       });
       grid.addUnstoppableCoord(4, 2);
 
-      const path = await Pathfinding.findPath(grid, 0, 2, 4, 2);
+      let path = await Pathfinding.findPath(
+        grid, { x: 0, y: 2 }, { x: 4, y: 2 }
+      );
       assert.isNull(path);
+
+      path = await Pathfinding.findPath(
+        grid, { x: 0, y: 2 }, { x: 4, y: 2 }, { endOnUnstoppable: true }
+      );
+      assert.deepEqual(path, [
+        { x: 0, y: 2},
+        { x: 1, y: 2},
+        { x: 2, y: 2},
+        { x: 3, y: 2},
+        { x: 4, y: 2}
+      ]);
     });
 
     it('prefers straight paths', async function() {
@@ -204,7 +231,9 @@ describe('Pathfinding', function() {
         walkableTiles: [0]
       });
 
-      const path = await Pathfinding.findPath(grid, 0, 2, 4, 2);
+      const path = await Pathfinding.findPath(
+        grid, { x: 0, y: 2 }, { x: 4, y: 2 }
+      );
       assert.deepEqual(path, [
         { x: 0, y: 2 },
         { x: 1, y: 2 },
@@ -228,7 +257,9 @@ describe('Pathfinding', function() {
 
       grid.setTileCost(2, 4);
 
-      const path = await Pathfinding.findPath(grid, 0, 2, 4, 2);
+      const path = await Pathfinding.findPath(
+        grid, { x: 0, y: 2 }, { x: 4, y: 2 }
+      );
       assert.deepEqual(path, [
         { x: 0, y: 2 },
         { x: 0, y: 3 },
@@ -255,7 +286,9 @@ describe('Pathfinding', function() {
       grid.addExtraCost(1, 3, 4);
       grid.addExtraCost(3, 4, 4);
 
-      const path = await Pathfinding.findPath(grid, 0, 2, 4, 2);
+      const path = await Pathfinding.findPath(
+        grid, { x: 0, y: 2 }, { x: 4, y: 2 }
+      );
       assert.deepEqual(path, [
         { x: 0, y: 2 },
         { x: 0, y: 3 },
@@ -281,9 +314,13 @@ describe('Pathfinding', function() {
         walkableTiles: [1]
       });
 
-      let path = await Pathfinding.findPath(grid, 1, 2, 3, 2, 3);
+      let path = await Pathfinding.findPath(
+        grid, { x: 1, y: 2 }, { x: 3, y: 2 }, { costThreshold: 3 }
+      );
       assert.isNull(path);
-      path = await Pathfinding.findPath(grid, 1, 2, 3, 2, 4);
+      path = await Pathfinding.findPath(
+        grid, { x: 1, y: 2 }, { x: 3, y: 2 }, { costThreshold: 4 }
+      );
       assert.deepEqual(path, [
         { x: 1, y: 2 },
         { x: 1, y: 3 },
@@ -306,7 +343,9 @@ describe('Pathfinding', function() {
         type: GridType.hex
       });
 
-      const path = await Pathfinding.findPath(grid, 1, 1, 2, 2);
+      const path = await Pathfinding.findPath(
+        grid, { x: 1, y: 1 }, { x: 2, y: 2 }
+      );
       assert.deepEqual(path, [
         { x: 1, y: 1 },
         { x: 0, y: 2 },
@@ -329,7 +368,9 @@ describe('Pathfinding', function() {
         type: GridType.intercardinal
       });
 
-      const path = await Pathfinding.findPath(grid, 1, 1, 3, 3);
+      const path = await Pathfinding.findPath(
+        grid, { x: 1, y: 1 }, { x: 3, y: 3 }
+      );
       assert.deepEqual(path, [
         { x: 1, y: 1 },
         { x: 2, y: 2 },
@@ -388,7 +429,7 @@ describe('Pathfinding', function() {
       ]);
     });
 
-    it('avoids unstoppableCoords', async function() {
+    it('includes unstoppableCoords', async function() {
       const grid = new Grid({
         tiles: [
           [1, 1, 0, 1, 1],
@@ -409,6 +450,8 @@ describe('Pathfinding', function() {
         { x: 0, y: 2 },
         { x: 1, y: 1 },
         { x: 0, y: 1 },
+        { x: 1, y: 3 },
+        { x: 0, y: 3 },
         { x: 1, y: 0 },
         { x: 0, y: 0 },
         { x: 1, y: 4 },
@@ -428,7 +471,9 @@ describe('Pathfinding', function() {
         walkableTiles: [1]
       });
 
-      let path = await Pathfinding.findWalkable(grid, { x: 1, y: 2 }, 1);
+      let path = await Pathfinding.findWalkable(
+        grid, { x: 1, y: 2 }, { costThreshold: 1 }
+      );
       assert.deepEqual(path, [
         { x: 1, y: 2 },
         { x: 0, y: 2 },
@@ -436,7 +481,9 @@ describe('Pathfinding', function() {
         { x: 1, y: 3 }
       ]);
 
-      path = await Pathfinding.findWalkable(grid, { x: 1, y: 2 }, 4);
+      path = await Pathfinding.findWalkable(
+        grid, { x: 1, y: 2 }, { costThreshold: 4 }
+      );
       assert.deepEqual(path, [
         { x: 1, y: 2 },
         { x: 0, y: 2 },
@@ -469,7 +516,9 @@ describe('Pathfinding', function() {
         walkableTiles: [1]
       });
 
-      const path = await Pathfinding.findWalkable(grid, { x: 1, y: 2 }, 0);
+      const path = await Pathfinding.findWalkable(
+        grid, { x: 1, y: 2 }, { costThreshold: 0 }
+      );
       assert.deepEqual(path, [
         { x: 1, y: 2 }
       ]);
@@ -487,7 +536,9 @@ describe('Pathfinding', function() {
         walkableTiles: []
       });
 
-      const path = await Pathfinding.findWalkable(grid, { x: 1, y: 2 }, 4);
+      const path = await Pathfinding.findWalkable(
+        grid, { x: 1, y: 2 }, { costThreshold: 4 }
+      );
       assert.deepEqual(path, []);
     });
 

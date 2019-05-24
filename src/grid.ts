@@ -1,3 +1,5 @@
+import { ICoord } from './coord';
+
 export enum GridType {
   cardinal,
   hex,
@@ -5,14 +7,14 @@ export enum GridType {
 }
 
 export default class Grid {
-  public static toCoordMap(
-    coords: Array<{x: number, y: number}>,
-    map: Map<number, Map<number, any>> = new Map<number, Map<number, any>>(),
-    value: boolean = true
+  public static toCoordMap<T>(
+    coords: ICoord[],
+    value: T,
+    map: Map<number, Map<number, T>> = new Map<number, Map<number, T>>()
   ) {
     coords.forEach(({ x: x, y: y }) => {
       if (!map.has(y)) {
-        map.set(y, new Map<number, Map<number, any>>());
+        map.set(y, new Map<number, T>());
       }
       map.get(y)!.set(x, value);
     });
@@ -20,8 +22,8 @@ export default class Grid {
   }
 
   public walkableTiles: number[];
-  public unwalkableCoords: Map<number, Map<number, any>>;
-  public unstoppableCoords: Map<number, Map<number, any>>;
+  public unwalkableCoords: Map<number, Map<number, boolean>>;
+  public unstoppableCoords: Map<number, Map<number, boolean>>;
   public type: GridType;
   public costs: Map<number, number>;
   public extraCosts: Map<number, Map<number, number>>;
@@ -116,7 +118,7 @@ export default class Grid {
   }
 
   public addUnwalkableCoord(x: number, y: number) {
-    this.addCoord(this.unwalkableCoords, x, y);
+    this.addCoord(this.unwalkableCoords, x, y, true);
   }
   public removeUnwalkableCoord(x: number, y: number) {
     this.removeCoord(this.unwalkableCoords, x, y);
@@ -126,7 +128,7 @@ export default class Grid {
   }
 
   public addUnstoppableCoord(x: number, y: number) {
-    this.addCoord(this.unstoppableCoords, x, y);
+    this.addCoord(this.unstoppableCoords, x, y, true);
   }
   public removeUnstoppableCoord(x: number, y: number) {
     this.removeCoord(this.unstoppableCoords, x, y);
@@ -135,20 +137,20 @@ export default class Grid {
     this.clearCoords(this.unstoppableCoords);
   }
 
-  private addCoord(map: Map<number, Map<number, any>>, x: number, y: number, value: any = true) {
+  private addCoord<T>(map: Map<number, Map<number, T>>, x: number, y: number, value: T) {
     if (!map.has(y)) {
-      map.set(y, new Map<number, any>());
+      map.set(y, new Map<number, T>());
     }
     map.get(y)!.set(x, value);
   }
 
-  private removeCoord(map: Map<number, Map<number, any>>, x: number, y: number) {
+  private removeCoord<T>(map: Map<number, Map<number, T>>, x: number, y: number) {
     if (map.has(y)) {
       map.get(y)!.delete(x);
     }
   }
 
-  private clearCoords(map: Map<number, any>) {
+  private clearCoords<T>(map: Map<number, T>) {
     map.clear();
   }
 }

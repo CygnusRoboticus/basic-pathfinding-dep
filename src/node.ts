@@ -1,45 +1,29 @@
-import Coord from './coord';
+import { ICoord } from './coord';
 
-export default class Node {
-  public parent: Node | null;
-  public x: number;
-  public y: number;
-  public cost: number;
-  public distanceToTarget: number;
+export class Node {
   public visited: boolean;
 
-  get guessTotalCost() {
+  get guessTotalCost(): number {
     return this.cost + this.distanceToTarget;
   }
 
-  constructor({
-    parent,
-    x,
-    y,
-    cost,
-    distanceToTarget
-  }: {
-    parent: Node | null,
-    x: number,
-    y: number,
-    cost: number,
-    distanceToTarget: number
-  }) {
-    this.parent = parent;
-    this.x = x;
-    this.y = y;
-    this.cost = cost;
-    this.distanceToTarget = distanceToTarget;
+  constructor(
+    public parent: Node | null,
+    public x: number,
+    public y: number,
+    public cost: number,
+    public distanceToTarget: number
+  ) {
     this.visited = false;
   }
 
-  public formatPath() {
-    const path: Coord[] = [];
+  public formatPath(): ICoord[] {
+    const path: ICoord[] = [];
 
-    path.push(new Coord(this.x, this.y));
+    path.push({ x: this.x, y: this.y });
     let parent = this.parent;
     while (parent) {
-      path.push(new Coord(parent.x, parent.y));
+      path.push({ x: parent.x, y: parent.y });
       parent = parent.parent;
     }
     path.reverse();
